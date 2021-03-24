@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -24,6 +27,7 @@ import javax.imageio.ImageIO;
 public class Game {
 
     public static LinkedList<Piece> pieces = new LinkedList<>();
+    public static Piece selectedPiece = null;
     public static void main(String[] args) {
 
         BufferedImage fullPiecesImage = null;
@@ -49,6 +53,56 @@ public class Game {
 
             }
         };
+
+        jFrame.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        jFrame.addMouseListener(new MouseListener() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+                selectedPiece = getPiece(e.getX(), e.getY());
+                jFrame.repaint();
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+                selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                jFrame.repaint();
+
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
         jFrame.add(jPanel);
         jFrame.setVisible(true);
     }
@@ -162,5 +216,16 @@ public class Game {
         return index;
     }
 
+    public static Piece getPiece(int x, int y) {
+
+        int xp=x/64;
+        int yp=y/64;
+        for(Piece p: pieces){
+            if(p.indexX==xp&&p.indexY==yp){
+                return p;
+            }
+        }
+        return null;
+    }
 
 }
