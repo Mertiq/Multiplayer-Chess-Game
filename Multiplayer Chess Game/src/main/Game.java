@@ -26,8 +26,12 @@ import javax.imageio.ImageIO;
  */
 public class Game {
 
+    public static LinkedList<Integer> movableLocationsX = new LinkedList<>();
+    public static LinkedList<Integer> movableLocationsY = new LinkedList<>();
     public static LinkedList<Piece> pieces = new LinkedList<>();
     public static Piece selectedPiece = null;
+    public static boolean mouseSelected = false;
+
     public static void main(String[] args) {
 
         BufferedImage fullPiecesImage = null;
@@ -50,6 +54,33 @@ public class Game {
                     g.drawImage(eachPiecesImage[GetPieceIndex(p)], p.indexX * 64, p.indexY * 64, this);
                 }
 
+                if(mouseSelected){
+                    movableLocationsX.clear();
+                    movableLocationsY.clear();
+                    switch (selectedPiece.name) {
+                        case "king":
+                            Moves.KingMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        case "queen":
+                            Moves.QueenMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        case "bishop":
+                            Moves.BishopMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        case "knight":
+                            Moves.KnightMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        case "rook":
+                            Moves.RookMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        case "pawn":
+                            Moves.PawnMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
+                            break;
+                        default:
+                            mouseSelected=false;
+                            return;
+                    }
+                }
 
             }
         };
@@ -57,7 +88,7 @@ public class Game {
         jFrame.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
-
+                //while drag move the piece with mouse
             }
 
             @Override
@@ -71,7 +102,10 @@ public class Game {
             @Override
             public void mousePressed(MouseEvent e) {
 
-                selectedPiece = getPiece(e.getX(), e.getY());
+                if(getPiece(e.getX(), e.getY()) != null){
+                    selectedPiece = getPiece(e.getX(), e.getY());
+                    mouseSelected = true;
+                }
                 jFrame.repaint();
 
             }
@@ -79,8 +113,14 @@ public class Game {
             @Override
             public void mouseReleased(MouseEvent e) {
 
-                selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                jFrame.repaint();
+                for (int i = 0; i < movableLocationsX.size(); i++) {
+                    if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
+                        selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                        mouseSelected=false;
+                        jFrame.repaint();
+                        return;
+                    }
+                }
 
             }
 
