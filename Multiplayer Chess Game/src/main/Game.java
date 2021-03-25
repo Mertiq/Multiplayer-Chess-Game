@@ -36,7 +36,7 @@ public class Game {
 
         BufferedImage fullPiecesImage = null;
         String filePath = "Multiplayer Chess Game/Multiplayer Chess Game/src/image/chess.png";
-        Image eachPiecesImage[] = new Image[12];
+        Image[] eachPiecesImage = new Image[12];
         
         SplitPiecesImage(ReadImage(fullPiecesImage, filePath), eachPiecesImage);
         CreateAllPieces(pieces);
@@ -78,7 +78,6 @@ public class Game {
                             break;
                         default:
                             mouseSelected=false;
-                            return;
                     }
                 }
 
@@ -102,9 +101,19 @@ public class Game {
             @Override
             public void mousePressed(MouseEvent e) {
 
-                if(getPiece(e.getX(), e.getY()) != null){
-                    selectedPiece = getPiece(e.getX(), e.getY());
-                    mouseSelected = true;
+                if(!mouseSelected){
+                    if(getPiece(e.getX(), e.getY()) != null){
+                        selectedPiece = getPiece(e.getX(), e.getY());
+                        mouseSelected = true;
+                    }
+                }else{
+                    for (int i = 0; i < movableLocationsX.size(); i++) {
+                        if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
+                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                            mouseSelected=false;
+                            break;
+                        }
+                    }
                 }
                 jFrame.repaint();
 
@@ -118,9 +127,18 @@ public class Game {
                         selectedPiece.move(e.getX() / 64, e.getY() / 64);
                         mouseSelected=false;
                         jFrame.repaint();
-                        return;
+                        break;
                     }
                 }
+
+                for (Piece p: pieces) {
+
+                    if(p.name.equals("king"))
+                        Check.Control(p.indexX, p.indexY, pieces, p);
+
+                }
+
+                System.out.println("----------------------------------------");
 
             }
 
