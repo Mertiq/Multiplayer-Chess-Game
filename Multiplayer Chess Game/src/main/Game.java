@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.awt.Image;
 import javax.imageio.ImageIO;
 
-
 /**
  *
  * @author Mert
@@ -31,6 +30,7 @@ public class Game {
     public static LinkedList<Piece> pieces = new LinkedList<>();
     public static Piece selectedPiece = null;
     public static boolean mouseSelected = false;
+    public static boolean isChecked = false;
 
     public static void main(String[] args) {
 
@@ -133,12 +133,16 @@ public class Game {
 
                 for (Piece p: pieces) {
 
-                    if(p.name.equals("king"))
+                    if(p.name.equals("king")){
                         Check.Control(p.indexX, p.indexY, pieces, p);
+                        //System.out.println(p.isWhite ? "beyaz" +" "+ p.indexY : "siyah" +" "+ p.indexY );
+                        if(isChecked)
+                            break;
+                    }
 
                 }
 
-                System.out.println("----------------------------------------");
+                System.out.println(isChecked ? "şah" : "not şah");
 
             }
 
