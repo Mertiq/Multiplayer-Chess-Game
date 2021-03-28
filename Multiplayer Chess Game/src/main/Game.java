@@ -12,11 +12,13 @@ import javax.swing.JPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.ImageObserver;
 import java.util.LinkedList;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.awt.Image;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 
 /**
@@ -32,12 +34,16 @@ public class Game {
     public static boolean mouseSelected = false;
     public static boolean isChecked = false;
 
+    public static BufferedImage crossBufferedImage = null;
+    public static Image crossImage = ReadImage(crossBufferedImage, "Multiplayer Chess Game/Multiplayer Chess Game/src/image/cross.png");
+
+
     public static void main(String[] args) {
 
         BufferedImage fullPiecesImage = null;
         String filePath = "Multiplayer Chess Game/Multiplayer Chess Game/src/image/chess.png";
+
         Image[] eachPiecesImage = new Image[12];
-        
         SplitPiecesImage(ReadImage(fullPiecesImage, filePath), eachPiecesImage);
         CreateAllPieces(pieces);
 
@@ -57,28 +63,8 @@ public class Game {
                 if(mouseSelected){
                     movableLocationsX.clear();
                     movableLocationsY.clear();
-                    switch (selectedPiece.name) {
-                        case "king":
-                            Moves.KingMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        case "queen":
-                            Moves.QueenMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        case "bishop":
-                            Moves.BishopMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        case "knight":
-                            Moves.KnightMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        case "rook":
-                            Moves.RookMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        case "pawn":
-                            Moves.PawnMove(selectedPiece.indexX, selectedPiece.indexY, selectedPiece.isWhite, g, this, pieces);
-                            break;
-                        default:
-                            mouseSelected=false;
-                    }
+                    FindMovableLocations(selectedPiece);
+                    DrawMovableLocations(g,this);
                 }
 
             }
@@ -107,28 +93,54 @@ public class Game {
                         mouseSelected = true;
                     }
                 }else{
-                    for (int i = 0; i < movableLocationsX.size(); i++) {
-                        if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
-                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                            mouseSelected=false;
-                            break;
+                    if(getPiece(e.getX(), e.getY()) != null){
+                        if(Objects.requireNonNull(getPiece(e.getX(), e.getY())).isWhite == selectedPiece.isWhite){
+                            selectedPiece = getPiece(e.getX(), e.getY());
+                            mouseSelected = true;
+                        }else{
+                            if(!isChecked){
+                                for (int i = 0; i < movableLocationsX.size(); i++) {
+                                    if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
+                                        selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                                        mouseSelected=false;
+                                        break;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
                 jFrame.repaint();
-
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
 
-                for (int i = 0; i < movableLocationsX.size(); i++) {
-                    if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
-                        selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                        mouseSelected=false;
-                        jFrame.repaint();
-                        break;
+                if(!isChecked){
+                    for (int i = 0; i < movableLocationsX.size(); i++) {
+                        if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
+                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                            mouseSelected=false;
+                            jFrame.repaint();
+                            break;
+                        }
                     }
+                }else{
+                    if(selectedPiece.name.equals("king")){
+                        int tempX = e.getX() / 64;
+                        int tempY = e.getY() / 64;
+
+                        Check.Control(tempX,tempY,pieces,selectedPiece);
+                        if(!isChecked){
+                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
+                            mouseSelected=false;
+                            jFrame.repaint();
+                        }
+                    }else {
+
+                       //----burası
+                    }
+
                 }
 
                 for (Piece p: pieces) {
@@ -142,7 +154,7 @@ public class Game {
 
                 }
 
-                System.out.println(isChecked ? "şah" : "not şah");
+                System.out.println(isChecked ? "şah" : "");
 
             }
 
@@ -289,5 +301,37 @@ public class Game {
         }
         return null;
     }
+
+    public static void FindMovableLocations(Piece piece) {
+        switch (piece.name) {
+            case "king":
+                Moves.KingMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+            case "queen":
+                Moves.QueenMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+            case "bishop":
+                Moves.BishopMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+            case "knight":
+                Moves.KnightMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+            case "rook":
+                Moves.RookMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+            case "pawn":
+                Moves.PawnMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                break;
+        }
+    }
+
+    public static void DrawMovableLocations(Graphics g, ImageObserver observer){
+        int y=0;
+        for (Integer locationsX : movableLocationsX) {
+            g.drawImage(crossImage, locationsX * 64, movableLocationsY.get(y) * 64, observer);
+            y++;
+        }
+    }
+
 
 }

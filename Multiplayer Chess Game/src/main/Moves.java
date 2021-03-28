@@ -1,11 +1,5 @@
 package main;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 
 enum PieceTypes{
@@ -16,22 +10,17 @@ enum PieceTypes{
 
 public class Moves {
 
-    public static BufferedImage crossBufferedImage = null;
-    public static Image crossImage = ReadImage(crossBufferedImage, "Multiplayer Chess Game/Multiplayer Chess Game/src/image/cross.png");
-
-    public static void PawnMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void PawnMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
         if(isWhite){
             if(WhatsInThere(x-1, y-1, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(x-1);
                 Game.movableLocationsY.add(y-1);
-                g.drawImage(crossImage, (x-1) * 64, (y-1) * 64, observer);
             }
             if(WhatsInThere(x+1, y-1, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(x+1);
                 Game.movableLocationsY.add(y-1);
-                g.drawImage(crossImage, (x+1) * 64, (y-1) * 64, observer);
             }
             if(y == 6){
                 for(int i = 0; i < 2 ;i++){
@@ -41,7 +30,6 @@ public class Moves {
                         {
                             Game.movableLocationsX.add(x);
                             Game.movableLocationsY.add(y);
-                            g.drawImage(crossImage, x * 64, y * 64, observer);
                         }
                         else
                         {
@@ -56,7 +44,6 @@ public class Moves {
                     {
                         Game.movableLocationsX.add(x);
                         Game.movableLocationsY.add(y);
-                        g.drawImage(crossImage, x * 64, y * 64, observer);
                     }
                 }
             }
@@ -65,13 +52,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(x-1);
                 Game.movableLocationsY.add(y+1);
-                g.drawImage(crossImage, (x-1) * 64, (y+1) * 64, observer);
             }
             if(WhatsInThere(x+1, y+1, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(x+1);
                 Game.movableLocationsY.add(y+1);
-                g.drawImage(crossImage, (x+1) * 64, (y+1) * 64, observer);
             }
             if(y == 1){
                 for(int i = 0; i < 2 ;i++){
@@ -81,7 +66,6 @@ public class Moves {
                         {
                             Game.movableLocationsX.add(x);
                             Game.movableLocationsY.add(y);
-                            g.drawImage(crossImage, x * 64, y * 64, observer);
                         }else {
                             break;
                         }
@@ -94,14 +78,13 @@ public class Moves {
                     {
                         Game.movableLocationsX.add(x);
                         Game.movableLocationsY.add(y);
-                        g.drawImage(crossImage, x * 64, y * 64, observer);
                     }
                 }
             }
         }
     }
 
-    public static void RookMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void RookMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
 
         int tempX;
         int tempY;
@@ -116,13 +99,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -140,13 +121,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -164,13 +143,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -188,13 +165,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -204,7 +179,7 @@ public class Moves {
 
     }
 
-    public static void KnightMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void KnightMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
 
         int tempX = x - 2;
         int tempY = y - 1;
@@ -221,7 +196,6 @@ public class Moves {
                 {
                     Game.movableLocationsX.add(tempX);
                     Game.movableLocationsY.add(tempY);
-                    g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 }
 
             }
@@ -245,7 +219,6 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
 
         }
@@ -256,7 +229,7 @@ public class Moves {
 
     }
 
-    public static void BishopMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void BishopMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
         
         int tempX;
         int tempY;
@@ -271,13 +244,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -295,13 +266,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -319,13 +288,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -343,13 +310,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -361,7 +326,7 @@ public class Moves {
         
     }
 
-    public static void QueenMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void QueenMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
 
         int tempX;
         int tempY;
@@ -376,13 +341,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -401,13 +364,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -426,13 +387,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -450,13 +409,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -474,13 +431,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -498,13 +453,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -522,13 +475,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -547,13 +498,11 @@ public class Moves {
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
                 Game.movableLocationsX.add(tempX);
                 Game.movableLocationsY.add(tempY);
-                g.drawImage(crossImage, tempX * 64, tempY * 64, observer);
                 break;
             }
             else{break;}
@@ -564,7 +513,7 @@ public class Moves {
 
     }
 
-    public static void KingMove(int x, int y, boolean isWhite, Graphics g, ImageObserver observer, LinkedList<Piece> pieces){
+    public static void KingMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
 
         for(int i = x - 1;i <= x+1;i++){
 
@@ -576,7 +525,6 @@ public class Moves {
                     {
                         Game.movableLocationsX.add(i);
                         Game.movableLocationsY.add(j);
-                        g.drawImage(crossImage, i * 64, j * 64, observer);
                     }
 
                 }
@@ -598,15 +546,6 @@ public class Moves {
             }
         }
         return PieceTypes.empty;
-    }
-
-    public static BufferedImage ReadImage(BufferedImage fullPiecesImage, String filePath) {
-        try {
-            fullPiecesImage = ImageIO.read(new File(filePath));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        return fullPiecesImage;
     }
 
 }
