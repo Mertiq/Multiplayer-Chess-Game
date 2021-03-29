@@ -29,8 +29,11 @@ public class Game {
 
     public static LinkedList<Integer> movableLocationsX = new LinkedList<>();
     public static LinkedList<Integer> movableLocationsY = new LinkedList<>();
+    public static LinkedList<Integer> goOnCheckLocationsX = new LinkedList<>();
+    public static LinkedList<Integer> goOnCheckLocationsY = new LinkedList<>();
     public static LinkedList<Piece> pieces = new LinkedList<>();
     public static Piece selectedPiece = null;
+    public static Piece checkerPiece = null;
     public static boolean mouseSelected = false;
     public static boolean isChecked = false;
 
@@ -48,8 +51,8 @@ public class Game {
         CreateAllPieces(pieces);
 
         JFrame jFrame = new JFrame();
-        jFrame.setBounds(10, 10, 512, 512);
-        jFrame.setUndecorated(true);
+        jFrame.setBounds(10, 10, 530, 555);
+        //jFrame.setUndecorated(true);
         JPanel jPanel = new JPanel(){
             @Override
             public void paint(Graphics g) {
@@ -57,16 +60,23 @@ public class Game {
                 DrawBoard(g);
 
                 for (Piece p : pieces) {
-                    g.drawImage(eachPiecesImage[GetPieceIndex(p)], p.indexX * 64, p.indexY * 64, this);
+                    g.drawImage(eachPiecesImage[GetPieceIndex(p)], p.screenPosX, p.screenPosY, this);
                 }
 
                 if(mouseSelected){
-                    movableLocationsX.clear();
-                    movableLocationsY.clear();
-                    FindMovableLocations(selectedPiece);
-                    DrawMovableLocations(g,this);
-                }
+                    if(!isChecked){
+                        movableLocationsX.clear();
+                        movableLocationsY.clear();
+                        FindMovableLocations(selectedPiece);
+                        DrawMovableLocations(g,this);
+                    }
+                    else{
+                        DrawMovableLocationsOnCheck(g,this);
+                        goOnCheckLocationsX.clear();
+                        goOnCheckLocationsY.clear();
+                    }
 
+                }
             }
         };
 
@@ -86,36 +96,60 @@ public class Game {
         jFrame.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
+                int getInputX = Math.max(e.getX() - 18, 0);
+                int getInputY = Math.max(e.getY() - 43, 0);
 
-                if(!mouseSelected){
-                    if(getPiece(e.getX(), e.getY()) != null){
-                        selectedPiece = getPiece(e.getX(), e.getY());
-                        mouseSelected = true;
-                    }
-                }else{
-                    if(getPiece(e.getX(), e.getY()) != null){
-                        if(Objects.requireNonNull(getPiece(e.getX(), e.getY())).isWhite == selectedPiece.isWhite){
-                            selectedPiece = getPiece(e.getX(), e.getY());
-                            mouseSelected = true;
-                        }else{
-                            if(!isChecked){
-                                for (int i = 0; i < movableLocationsX.size(); i++) {
-                                    if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
-                                        selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                                        mouseSelected=false;
+                if(getPiece(getInputX, getInputY) != null){ // if there is a piece at the mouse pressed position
+                    if(!mouseSelected){ // if mouse didn't select before that
+                        selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
+                        mouseSelected = true; // mouse selected
+                    }else{ // if mouse selected before that
+                        if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == selectedPiece.isWhite){ // if the color of the piece which is at mouse pressed position is same with the color of selectedPiece
+                            selectedPiece = getPiece(getInputX, getInputY); //selectedPiece selected
+                            mouseSelected = true; // mouse selected
+                        }else{ //  if the color of the piece which is at mouse pressed position isn't same with the color of selectedPiece
+                            for (int i = 0; i < movableLocationsX.size(); i++) {
+                                if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
+                                    selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+                                    break;
+                                }
+                            }
+                            mouseSelected=false; // mouse didn't select
+                            // after movement check control
+                            for (Piece p: pieces) {
+                                if(p.name.equals("king")){
+                                    Check.Control(p.indexX, p.indexY, pieces, p);
+                                    if(isChecked)
                                         break;
-                                    }
                                 }
                             }
                         }
                     }
+                }else{ // if there isn't any piece at the mouse pressed position
+                    for (int i = 0; i < movableLocationsX.size(); i++) {
+                        if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
+                            selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+                            break;
+                        }
+                    }
+                    mouseSelected=false; // mouse didn't select
+                    // after movement check control
+                    for (Piece p: pieces) {
+                        if(p.name.equals("king")){
+                            Check.Control(p.indexX, p.indexY, pieces, p);
+                            if(isChecked)
+                                break;
+                        }
+                    }
                 }
+
                 jFrame.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
 
+                /*
                 if(!isChecked){
                     for (int i = 0; i < movableLocationsX.size(); i++) {
                         if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
@@ -125,6 +159,7 @@ public class Game {
                             break;
                         }
                     }
+                    mouseSelected=false;
                 }else{
                     if(selectedPiece.name.equals("king")){
                         int tempX = e.getX() / 64;
@@ -138,24 +173,27 @@ public class Game {
                         }
                     }else {
 
+
                        //----burası
                     }
 
                 }
 
                 for (Piece p: pieces) {
-
                     if(p.name.equals("king")){
                         Check.Control(p.indexX, p.indexY, pieces, p);
                         //System.out.println(p.isWhite ? "beyaz" +" "+ p.indexY : "siyah" +" "+ p.indexY );
                         if(isChecked)
                             break;
                     }
+                }
+                if(isChecked){
 
+                    System.out.println(checkerPiece.isWhite ? "beyaz" +" "+ checkerPiece.name : "siyah" +" "+ checkerPiece.name );
                 }
 
                 System.out.println(isChecked ? "şah" : "");
-
+*/
             }
 
             @Override
@@ -211,7 +249,7 @@ public class Game {
         Piece blackPawn0 = new Piece(0, 1, false, "pawn", pieces);
         Piece blackPawn1 = new Piece(1, 1, false, "pawn", pieces);
         Piece blackPawn2 = new Piece(2, 1, false, "pawn", pieces);
-        Piece blackPawn3 = new Piece(3, 1, false, "pawn", pieces);
+        Piece blackPawn3 = new Piece(3, 2, false, "pawn", pieces);
         Piece blackPawn4 = new Piece(4, 1, false, "pawn", pieces);
         Piece blackPawn5 = new Piece(5, 1, false, "pawn", pieces);
         Piece blackPawn6 = new Piece(6, 1, false, "pawn", pieces);
@@ -231,7 +269,7 @@ public class Game {
         Piece whitePawn1 = new Piece(1, 6, true, "pawn", pieces);
         Piece whitePawn2 = new Piece(2, 6, true, "pawn", pieces);
         Piece whitePawn3 = new Piece(3, 6, true, "pawn", pieces);
-        Piece whitePawn4 = new Piece(4, 6, true, "pawn", pieces);
+        Piece whitePawn4 = new Piece(4, 5, true, "pawn", pieces);
         Piece whitePawn5 = new Piece(5, 6, true, "pawn", pieces);
         Piece whitePawn6 = new Piece(6, 6, true, "pawn", pieces);
         Piece whitePawn7 = new Piece(7, 6, true, "pawn", pieces);
@@ -333,5 +371,12 @@ public class Game {
         }
     }
 
+    public static void DrawMovableLocationsOnCheck(Graphics g, ImageObserver observer){
+        int y=0;
+        for (Integer locationsX : goOnCheckLocationsX) {
+            g.drawImage(crossImage, locationsX * 64, goOnCheckLocationsY.get(y) * 64, observer);
+            y++;
+        }
+    }
 
 }

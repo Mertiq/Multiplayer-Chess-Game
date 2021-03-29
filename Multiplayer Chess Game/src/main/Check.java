@@ -7,9 +7,12 @@ public class Check {
     public static void Control(int x, int y, LinkedList<Piece> pieces, Piece king){
         Game.isChecked = false;
         CheckPawn(x,y, pieces, king);
-        CheckKnight(x,y, pieces, king);
-        CheckBishopAndQueen(x,y, pieces, king);
-        CheckRookAndQueen(x,y, pieces, king);
+        if(!Game.isChecked)
+            CheckKnight(x,y, pieces, king);
+        if(!Game.isChecked)
+            CheckBishopAndQueen(x,y, pieces, king);
+        if(!Game.isChecked)
+            CheckRookAndQueen(x,y, pieces, king);
     }
 
 
@@ -28,6 +31,9 @@ public class Check {
                             continue;
                         if (i == p.indexX && j == p.indexY && p.name.equals("pawn")) {
                             Game.isChecked = true;
+                            Game.checkerPiece = p;
+                            Game.goOnCheckLocationsX.add(p.indexX);
+                            Game.goOnCheckLocationsY.add(p.indexY);
                             break;
                         }
 
@@ -48,6 +54,9 @@ public class Check {
                             continue;
                         if (i == p.indexX && j == p.indexY && p.name.equals("pawn")) {
                             Game.isChecked = true;
+                            Game.checkerPiece = p;
+                            Game.goOnCheckLocationsX.add(p.indexX);
+                            Game.goOnCheckLocationsY.add(p.indexY);
                             break;
                         }
 
@@ -77,6 +86,9 @@ public class Check {
 
                     if (tempX == p.indexX && tempY == p.indexY && p.name.equals("knight") && p.isWhite != king.isWhite) {
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
+                        Game.goOnCheckLocationsX.add(p.indexX);
+                        Game.goOnCheckLocationsY.add(p.indexY);
                         break;
                     }
                 }
@@ -102,6 +114,9 @@ public class Check {
 
                     if (tempX == p.indexX && tempY == p.indexY && p.name.equals("knight") && p.isWhite != king.isWhite) {
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
+                        Game.goOnCheckLocationsX.add(p.indexX);
+                        Game.goOnCheckLocationsY.add(p.indexY);
                         break;
                     }
 
@@ -137,10 +152,22 @@ public class Check {
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
+                        break;
                     }
                 }
+            }
 
-
+            int a = tempX;
+            int b = tempY;
+            if(Game.isChecked){
+                while(a != x && b != y){
+                    Game.goOnCheckLocationsX.add(a);
+                    Game.goOnCheckLocationsY.add(b);
+                    a++;
+                    b++;
+                }
+                break;
             }
 
             tempX--;
@@ -163,10 +190,23 @@ public class Check {
 
                     if((p.name.equals("bishop") || p.name.equals("queen")) ){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
 
 
+            }
+
+            int a = tempX;
+            int b = tempY;
+            if(Game.isChecked){
+                while(a != x && b != y){
+                    Game.goOnCheckLocationsX.add(a);
+                    Game.goOnCheckLocationsY.add(b);
+                    a--;
+                    b--;
+                }
+                break;
             }
 
             tempX++;
@@ -189,10 +229,21 @@ public class Check {
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
+            }
 
-
+            int a = tempX;
+            int b = tempY;
+            if(Game.isChecked){
+                while(a != x && b != y){
+                    Game.goOnCheckLocationsX.add(a);
+                    Game.goOnCheckLocationsY.add(b);
+                    a--;
+                    b++;
+                }
+                break;
             }
 
             tempX++;
@@ -215,8 +266,22 @@ public class Check {
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
+                        break;
                     }
                 }
+            }
+
+            int a = tempX;
+            int b = tempY;
+            if(Game.isChecked){
+                while(a != x && b != y){
+                    Game.goOnCheckLocationsX.add(a);
+                    Game.goOnCheckLocationsY.add(b);
+                    a++;
+                    b--;
+                }
+                break;
             }
 
             tempX--;
@@ -243,9 +308,19 @@ public class Check {
                         break;
                     if( (p.name.equals("rook") || p.name.equals("queen"))){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
+            }
 
+            int b = tempY;
+            if(Game.isChecked){
+                while(b != y){
+                    Game.goOnCheckLocationsX.add(tempX);
+                    Game.goOnCheckLocationsY.add(b);
+                    b++;
+                }
+                break;
             }
 
             tempY--;
@@ -264,9 +339,20 @@ public class Check {
                         break;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
 
+            }
+
+            int b = tempY;
+            if(Game.isChecked){
+                while(b != y){
+                    Game.goOnCheckLocationsX.add(tempX);
+                    Game.goOnCheckLocationsY.add(b);
+                    b--;
+                }
+                break;
             }
 
             tempY++;
@@ -285,8 +371,19 @@ public class Check {
                         break;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
+            }
+
+            int b = tempX;
+            if(Game.isChecked){
+                while(b != x){
+                    Game.goOnCheckLocationsX.add(b);
+                    Game.goOnCheckLocationsY.add(tempY);
+                    b++;
+                }
+                break;
             }
 
             tempX--;
@@ -305,8 +402,19 @@ public class Check {
                         break;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
+                        Game.checkerPiece = p;
                     }
                 }
+            }
+
+            int b = tempX;
+            if(Game.isChecked){
+                while(b != y){
+                    Game.goOnCheckLocationsX.add(b);
+                    Game.goOnCheckLocationsY.add(tempY);
+                    b--;
+                }
+                break;
             }
 
             tempX++;
