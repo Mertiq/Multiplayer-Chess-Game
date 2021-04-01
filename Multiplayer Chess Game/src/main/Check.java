@@ -246,13 +246,14 @@ public class Check {
         tempX = x;
         tempY = y - 1;
 
+        a:
         while (tempY >= 0){
 
             for (Piece p:pieces) {
 
                 if(tempX==p.indexX && tempY==p.indexY ){
                     if(p.isWhite==king.isWhite)
-                        break;
+                        break a;
                     if( (p.name.equals("rook") || p.name.equals("queen"))){
                         Game.isChecked = true;
                         Game.checkerPiece = p;
@@ -268,13 +269,14 @@ public class Check {
         tempX = x;
         tempY = y + 1;
 
+        a:
         while (tempY <= 7){
 
             for (Piece p:pieces) {
 
                 if(tempX==p.indexX && tempY==p.indexY ){
                     if(p.isWhite==king.isWhite)
-                        break;
+                        break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
                         Game.checkerPiece = p;
@@ -291,13 +293,14 @@ public class Check {
         tempX = x - 1;
         tempY = y;
 
+        a:
         while (tempX >= 0){
 
             for (Piece p:pieces) {
 
                 if(tempX==p.indexX && tempY==p.indexY ){
                     if(p.isWhite==king.isWhite)
-                        break;
+                        break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
                         Game.checkerPiece = p;
@@ -313,13 +316,14 @@ public class Check {
         tempX = x + 1;
         tempY = y;
 
+        a:
         while (tempX <= 7){
 
             for (Piece p:pieces) {
 
                 if(tempX==p.indexX && tempY==p.indexY ){
                     if(p.isWhite==king.isWhite)
-                        break;
+                        break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
                         Game.isChecked = true;
                         Game.checkerPiece = p;
