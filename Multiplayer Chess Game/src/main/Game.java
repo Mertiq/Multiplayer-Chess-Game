@@ -40,6 +40,7 @@ public class Game {
     public static BufferedImage crossBufferedImage = null;
     public static Image crossImage = ReadImage(crossBufferedImage, "Multiplayer Chess Game/Multiplayer Chess Game/src/image/cross.png");
 
+    public static Boolean isTurnWhite = true;
 
     public static void main(String[] args) {
 
@@ -52,7 +53,6 @@ public class Game {
 
         JFrame jFrame = new JFrame();
         jFrame.setBounds(10, 10, 530, 555);
-        //jFrame.setUndecorated(true);
         JPanel jPanel = new JPanel(){
             @Override
             public void paint(Graphics g) {
@@ -64,18 +64,10 @@ public class Game {
                 }
 
                 if(mouseSelected){
-                    if(!isChecked){
-                        movableLocationsX.clear();
-                        movableLocationsY.clear();
-                        FindMovableLocations(selectedPiece);
-                        DrawMovableLocations(g,this);
-                    }
-                    else{
-                        DrawMovableLocationsOnCheck(g,this);
-                        goOnCheckLocationsX.clear();
-                        goOnCheckLocationsY.clear();
-                    }
-
+                    movableLocationsX.clear();
+                    movableLocationsY.clear();
+                    FindMovableLocations(selectedPiece);
+                    DrawMovableLocations(g,this);
                 }
             }
         };
@@ -101,19 +93,42 @@ public class Game {
 
                 if(getPiece(getInputX, getInputY) != null){ // if there is a piece at the mouse pressed position
                     if(!mouseSelected){ // if mouse didn't select before that
-                        selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
-                        mouseSelected = true; // mouse selected
+                        if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == isTurnWhite){
+                            selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
+                            mouseSelected = true; // mouse selected
+                        }
                     }else{ // if mouse selected before that
                         if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == selectedPiece.isWhite){ // if the color of the piece which is at mouse pressed position is same with the color of selectedPiece
-                            selectedPiece = getPiece(getInputX, getInputY); //selectedPiece selected
-                            mouseSelected = true; // mouse selected
+                            if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == isTurnWhite){
+                                selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
+                                mouseSelected = true; // mouse selected
+                            }
                         }else{ //  if the color of the piece which is at mouse pressed position isn't same with the color of selectedPiece
                             for (int i = 0; i < movableLocationsX.size(); i++) {
                                 if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
                                     selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+
+                                    mouseSelected=false; // mouse didn't select
+                                    // after movement check control
+                                    for (Piece p: pieces) {
+                                        if(p.name.equals("king")){
+                                            Check.Control(p.indexX, p.indexY, pieces, p);
+                                            if(isChecked)
+                                                break;
+                                        }
+                                    }
+
+                                    isTurnWhite = !isTurnWhite;
                                     break;
                                 }
                             }
+                        }
+                    }
+                }else{ // if there isn't any piece at the mouse pressed position
+                    for (int i = 0; i < movableLocationsX.size(); i++) {
+                        if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
+                            selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+
                             mouseSelected=false; // mouse didn't select
                             // after movement check control
                             for (Piece p: pieces) {
@@ -123,23 +138,18 @@ public class Game {
                                         break;
                                 }
                             }
-                        }
-                    }
-                }else{ // if there isn't any piece at the mouse pressed position
-                    for (int i = 0; i < movableLocationsX.size(); i++) {
-                        if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
-                            selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+
+                            isTurnWhite = !isTurnWhite;
                             break;
                         }
                     }
-                    mouseSelected=false; // mouse didn't select
-                    // after movement check control
-                    for (Piece p: pieces) {
-                        if(p.name.equals("king")){
-                            Check.Control(p.indexX, p.indexY, pieces, p);
-                            if(isChecked)
-                                break;
-                        }
+                }
+                if(checkerPiece != null)
+                    System.out.println(Objects.requireNonNull(checkerPiece).isWhite + " king "+ isChecked);
+
+                if(isChecked) {
+                    if(checkerPiece.isWhite == isTurnWhite){
+                        System.out.println("mate");
                     }
                 }
 
@@ -148,52 +158,8 @@ public class Game {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                // TODO Auto-generated method stub
 
-                /*
-                if(!isChecked){
-                    for (int i = 0; i < movableLocationsX.size(); i++) {
-                        if((movableLocationsX.get(i) == (e.getX() / 64)) && (movableLocationsY.get(i) == (e.getY() / 64))){
-                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                            mouseSelected=false;
-                            jFrame.repaint();
-                            break;
-                        }
-                    }
-                    mouseSelected=false;
-                }else{
-                    if(selectedPiece.name.equals("king")){
-                        int tempX = e.getX() / 64;
-                        int tempY = e.getY() / 64;
-
-                        Check.Control(tempX,tempY,pieces,selectedPiece);
-                        if(!isChecked){
-                            selectedPiece.move(e.getX() / 64, e.getY() / 64);
-                            mouseSelected=false;
-                            jFrame.repaint();
-                        }
-                    }else {
-
-
-                       //----burası
-                    }
-
-                }
-
-                for (Piece p: pieces) {
-                    if(p.name.equals("king")){
-                        Check.Control(p.indexX, p.indexY, pieces, p);
-                        //System.out.println(p.isWhite ? "beyaz" +" "+ p.indexY : "siyah" +" "+ p.indexY );
-                        if(isChecked)
-                            break;
-                    }
-                }
-                if(isChecked){
-
-                    System.out.println(checkerPiece.isWhite ? "beyaz" +" "+ checkerPiece.name : "siyah" +" "+ checkerPiece.name );
-                }
-
-                System.out.println(isChecked ? "şah" : "");
-*/
             }
 
             @Override
@@ -249,7 +215,7 @@ public class Game {
         Piece blackPawn0 = new Piece(0, 1, false, "pawn", pieces);
         Piece blackPawn1 = new Piece(1, 1, false, "pawn", pieces);
         Piece blackPawn2 = new Piece(2, 1, false, "pawn", pieces);
-        Piece blackPawn3 = new Piece(3, 2, false, "pawn", pieces);
+        Piece blackPawn3 = new Piece(3, 1, false, "pawn", pieces);
         Piece blackPawn4 = new Piece(4, 1, false, "pawn", pieces);
         Piece blackPawn5 = new Piece(5, 1, false, "pawn", pieces);
         Piece blackPawn6 = new Piece(6, 1, false, "pawn", pieces);
@@ -269,7 +235,7 @@ public class Game {
         Piece whitePawn1 = new Piece(1, 6, true, "pawn", pieces);
         Piece whitePawn2 = new Piece(2, 6, true, "pawn", pieces);
         Piece whitePawn3 = new Piece(3, 6, true, "pawn", pieces);
-        Piece whitePawn4 = new Piece(4, 5, true, "pawn", pieces);
+        Piece whitePawn4 = new Piece(4, 6, true, "pawn", pieces);
         Piece whitePawn5 = new Piece(5, 6, true, "pawn", pieces);
         Piece whitePawn6 = new Piece(6, 6, true, "pawn", pieces);
         Piece whitePawn7 = new Piece(7, 6, true, "pawn", pieces);

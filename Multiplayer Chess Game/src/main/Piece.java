@@ -42,7 +42,12 @@ public class Piece {
     }
 
     public void kill() {
-        pieces.remove(this);
-    }
 
+        pieces.remove(this);
+        /*
+        if(this.name.equals("king"))
+            System.out.println("mate");
+         */
+
+    }
 }
