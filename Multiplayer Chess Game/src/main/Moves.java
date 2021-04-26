@@ -10,17 +10,17 @@ enum PieceTypes{
 
 public class Moves {
 
-    public static void PawnMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void PawnMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
         if(isWhite){
             if(WhatsInThere(x-1, y-1, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(x-1);
-                Game.movableLocationsY.add(y-1);
+                game.movableLocationsX.add(x-1);
+                game.movableLocationsY.add(y-1);
             }
             if(WhatsInThere(x+1, y-1, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(x+1);
-                Game.movableLocationsY.add(y-1);
+                game.movableLocationsX.add(x+1);
+                game.movableLocationsY.add(y-1);
             }
             if(y == 6){
                 for(int i = 0; i < 2 ;i++){
@@ -28,8 +28,8 @@ public class Moves {
                     if( (x >= 0 && x <= 7) && (y >= 0 && y <= 7) ){
                         if(WhatsInThere(x, y, pieces, isWhite).toString().equals("empty"))
                         {
-                            Game.movableLocationsX.add(x);
-                            Game.movableLocationsY.add(y);
+                            game.movableLocationsX.add(x);
+                            game.movableLocationsY.add(y);
                         }
                         else
                         {
@@ -42,21 +42,21 @@ public class Moves {
                 if( (x >= 0 && x <= 7) && (y >= 0 && y <= 7) ){
                     if(WhatsInThere(x, y, pieces, isWhite).toString().equals("empty"))
                     {
-                        Game.movableLocationsX.add(x);
-                        Game.movableLocationsY.add(y);
+                        game.movableLocationsX.add(x);
+                        game.movableLocationsY.add(y);
                     }
                 }
             }
         }else{
             if(WhatsInThere(x-1, y+1, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(x-1);
-                Game.movableLocationsY.add(y+1);
+                game.movableLocationsX.add(x-1);
+                game.movableLocationsY.add(y+1);
             }
             if(WhatsInThere(x+1, y+1, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(x+1);
-                Game.movableLocationsY.add(y+1);
+                game.movableLocationsX.add(x+1);
+                game.movableLocationsY.add(y+1);
             }
             if(y == 1){
                 for(int i = 0; i < 2 ;i++){
@@ -64,8 +64,8 @@ public class Moves {
                     if( (x >= 0 && x <= 7) && (y >= 0 && y <= 7) ){
                         if(WhatsInThere(x, y, pieces, isWhite).toString().equals("empty"))
                         {
-                            Game.movableLocationsX.add(x);
-                            Game.movableLocationsY.add(y);
+                            game.movableLocationsX.add(x);
+                            game.movableLocationsY.add(y);
                         }else {
                             break;
                         }
@@ -76,15 +76,15 @@ public class Moves {
                 if( (x >= 0 && x <= 7) && (y >= 0 && y <= 7) ){
                     if(WhatsInThere(x, y, pieces, isWhite).toString().equals("empty"))
                     {
-                        Game.movableLocationsX.add(x);
-                        Game.movableLocationsY.add(y);
+                        game.movableLocationsX.add(x);
+                        game.movableLocationsY.add(y);
                     }
                 }
             }
         }
     }
 
-    public static void RookMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void RookMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
 
         int tempX;
         int tempY;
@@ -97,13 +97,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -119,13 +119,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -141,13 +141,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -163,13 +163,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -179,7 +179,7 @@ public class Moves {
 
     }
 
-    public static void KnightMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void KnightMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
 
         int tempX = x - 2;
         int tempY = y - 1;
@@ -194,8 +194,8 @@ public class Moves {
 
                 if(!WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("friend"))
                 {
-                    Game.movableLocationsX.add(tempX);
-                    Game.movableLocationsY.add(tempY);
+                    game.movableLocationsX.add(tempX);
+                    game.movableLocationsY.add(tempY);
                 }
 
             }
@@ -217,8 +217,8 @@ public class Moves {
 
             if(!WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("friend"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
 
         }
@@ -229,7 +229,7 @@ public class Moves {
 
     }
 
-    public static void BishopMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void BishopMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
         
         int tempX;
         int tempY;
@@ -242,13 +242,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -264,13 +264,13 @@ public class Moves {
         while (tempX <= 7 && tempY <= 7){
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -286,13 +286,13 @@ public class Moves {
         while (tempX <= 7 && tempY >= 0){
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -308,13 +308,13 @@ public class Moves {
         while (tempX >= 0 && tempY <= 7){
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -326,7 +326,7 @@ public class Moves {
         
     }
 
-    public static void QueenMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void QueenMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
 
         int tempX;
         int tempY;
@@ -339,13 +339,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -362,13 +362,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -385,13 +385,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -407,13 +407,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -429,13 +429,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -451,13 +451,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -473,13 +473,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -496,13 +496,13 @@ public class Moves {
 
             if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("empty"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
             }
             else if(WhatsInThere(tempX, tempY, pieces, isWhite).toString().equals("enemy"))
             {
-                Game.movableLocationsX.add(tempX);
-                Game.movableLocationsY.add(tempY);
+                game.movableLocationsX.add(tempX);
+                game.movableLocationsY.add(tempY);
                 break;
             }
             else{break;}
@@ -513,7 +513,7 @@ public class Moves {
 
     }
 
-    public static void KingMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces){
+    public static void KingMove(int x, int y, boolean isWhite, LinkedList<Piece> pieces, Game game){
 
         for(int i = x - 1;i <= x+1;i++){
 
@@ -523,8 +523,8 @@ public class Moves {
 
                     if(!WhatsInThere(i, j, pieces, isWhite).toString().equals("friend"))
                     {
-                        Game.movableLocationsX.add(i);
-                        Game.movableLocationsY.add(j);
+                        game.movableLocationsX.add(i);
+                        game.movableLocationsY.add(j);
                     }
 
                 }

@@ -4,19 +4,19 @@ import java.util.LinkedList;
 
 public class Check {
 
-    public static void Control(int x, int y, LinkedList<Piece> pieces, Piece king){
-        Game.isChecked = false;
-        CheckPawn(x,y, pieces, king);
-        if(!Game.isChecked)
-            CheckKnight(x,y, pieces, king);
-        if(!Game.isChecked)
-            CheckBishopAndQueen(x,y, pieces, king);
-        if(!Game.isChecked)
-            CheckRookAndQueen(x,y, pieces, king);
+    public static void Control(int x, int y, LinkedList<Piece> pieces, Piece king, Game game){
+        game.isChecked = false;
+        CheckPawn(x,y, pieces, king,game);
+        if(!game.isChecked)
+            CheckKnight(x,y, pieces, king,game);
+        if(!game.isChecked)
+            CheckBishopAndQueen(x,y, pieces, king,game);
+        if(!game.isChecked)
+            CheckRookAndQueen(x,y, pieces, king,game);
     }
 
 
-    public static void CheckPawn(int x, int y, LinkedList<Piece> pieces, Piece king){
+    public static void CheckPawn(int x, int y, LinkedList<Piece> pieces, Piece king, Game game){
 
         if(king.isWhite){
             for(int i = x - 1;i <= x+1;i++){
@@ -30,8 +30,8 @@ public class Check {
                         if(p.isWhite)
                             continue;
                         if (i == p.indexX && j == p.indexY && p.name.equals("pawn")) {
-                            Game.isChecked = true;
-                            Game.checkerPiece = p;
+                            game.isChecked = true;
+                            game.checkerPiece = p;
                             break;
                         }
 
@@ -51,8 +51,8 @@ public class Check {
                         if(!p.isWhite)
                             continue;
                         if (i == p.indexX && j == p.indexY && p.name.equals("pawn")) {
-                            Game.isChecked = true;
-                            Game.checkerPiece = p;
+                            game.isChecked = true;
+                            game.checkerPiece = p;
                             break;
                         }
 
@@ -65,7 +65,7 @@ public class Check {
 
     }
 
-    public static void CheckKnight(int x, int y, LinkedList<Piece> pieces, Piece king){
+    public static void CheckKnight(int x, int y, LinkedList<Piece> pieces, Piece king, Game game){
 
         int tempX = x - 2;
         int tempY = y - 1;
@@ -81,8 +81,8 @@ public class Check {
                 for (Piece p:pieces) {
 
                     if (tempX == p.indexX && tempY == p.indexY && p.name.equals("knight") && p.isWhite != king.isWhite) {
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                         break;
                     }
                 }
@@ -107,8 +107,8 @@ public class Check {
                 for (Piece p:pieces) {
 
                     if (tempX == p.indexX && tempY == p.indexY && p.name.equals("knight") && p.isWhite != king.isWhite) {
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                         break;
                     }
 
@@ -122,7 +122,7 @@ public class Check {
 
     }
 
-    public static void CheckBishopAndQueen(int x, int y, LinkedList<Piece> pieces, Piece king){
+    public static void CheckBishopAndQueen(int x, int y, LinkedList<Piece> pieces, Piece king, Game game){
 
 
         int tempX;
@@ -143,8 +143,8 @@ public class Check {
                     }
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                         break;
                     }
                 }
@@ -170,8 +170,8 @@ public class Check {
                     }
 
                     if((p.name.equals("bishop") || p.name.equals("queen")) ){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
 
@@ -196,8 +196,8 @@ public class Check {
                     }
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
             }
@@ -223,8 +223,8 @@ public class Check {
                     }
 
                     if((p.name.equals("bishop") || p.name.equals("queen"))){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                         break;
                     }
                 }
@@ -238,7 +238,7 @@ public class Check {
 
     }
 
-    public static void CheckRookAndQueen(int x, int y, LinkedList<Piece> pieces, Piece king){
+    public static void CheckRookAndQueen(int x, int y, LinkedList<Piece> pieces, Piece king, Game game){
         int tempX;
         int tempY;
 
@@ -255,8 +255,8 @@ public class Check {
                     if(p.isWhite==king.isWhite)
                         break a;
                     if( (p.name.equals("rook") || p.name.equals("queen"))){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
             }
@@ -278,8 +278,8 @@ public class Check {
                     if(p.isWhite==king.isWhite)
                         break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
 
@@ -302,8 +302,8 @@ public class Check {
                     if(p.isWhite==king.isWhite)
                         break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
             }
@@ -325,8 +325,8 @@ public class Check {
                     if(p.isWhite==king.isWhite)
                         break a;
                     if( (p.name.equals("rook") || p.name.equals("queen")) ){
-                        Game.isChecked = true;
-                        Game.checkerPiece = p;
+                        game.isChecked = true;
+                        game.checkerPiece = p;
                     }
                 }
             }

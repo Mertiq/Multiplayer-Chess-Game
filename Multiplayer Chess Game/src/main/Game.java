@@ -5,74 +5,83 @@
  */
 package main;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import Client.Client;
+
+import java.awt.*;
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.ImageObserver;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.awt.Image;
 import java.util.Objects;
 import javax.imageio.ImageIO;
 
-/**
- *
- * @author Mert
- */
+import Message.Message;
+
 public class Game {
 
-    public static LinkedList<Integer> movableLocationsX = new LinkedList<>();
-    public static LinkedList<Integer> movableLocationsY = new LinkedList<>();
-    public static LinkedList<Integer> goOnCheckLocationsX = new LinkedList<>();
-    public static LinkedList<Integer> goOnCheckLocationsY = new LinkedList<>();
-    public static LinkedList<Piece> pieces = new LinkedList<>();
-    public static Piece selectedPiece = null;
-    public static Piece checkerPiece = null;
-    public static boolean mouseSelected = false;
-    public static boolean isChecked = false;
+    public LinkedList<Integer> movableLocationsX = new LinkedList<>();
+    public LinkedList<Integer> movableLocationsY = new LinkedList<>();
+    public LinkedList<Piece> pieces = new LinkedList<>();
+    public Piece selectedPiece = null;
+    public Piece checkerPiece = null;
+    public boolean mouseSelected = false;
+    public boolean isChecked = false;
 
-    public static BufferedImage crossBufferedImage = null;
-    public static Image crossImage = ReadImage(crossBufferedImage, "Multiplayer Chess Game/Multiplayer Chess Game/src/image/cross.png");
 
-    public static Boolean isTurnWhite = true;
+    public Image crossImage = ReadImage("Multiplayer Chess Game/Multiplayer Chess Game/src/image/cross.png");
+
+    public boolean isTurnWhite = false;
+    public boolean isSideWhite = false;
+
+    public JFrame jFrame = new JFrame();
 
     public static void main(String[] args) {
+
+        Game game = new Game();
+
+        Client c = new Client(game);
+        c.Start("127.0.0.1", 5000);
+
+        Message msg = new Message(Message.Message_Type.SideChoose);
+        msg.content = game.isSideWhite;
+        Client.Send(msg);
+
 
         BufferedImage fullPiecesImage = null;
         String filePath = "Multiplayer Chess Game/Multiplayer Chess Game/src/image/chess.png";
 
         Image[] eachPiecesImage = new Image[12];
-        SplitPiecesImage(ReadImage(fullPiecesImage, filePath), eachPiecesImage);
-        CreateAllPieces(pieces);
+        SplitPiecesImage(ReadImage(filePath), eachPiecesImage);
+        CreateAllPieces(game.pieces);
 
-        JFrame jFrame = new JFrame();
-        jFrame.setBounds(10, 10, 530, 555);
+
+        game.jFrame.setBounds(10, 10, 530, 555);
         JPanel jPanel = new JPanel(){
             @Override
             public void paint(Graphics g) {
 
                 DrawBoard(g);
 
-                for (Piece p : pieces) {
+                for (Piece p : game.pieces) {
                     g.drawImage(eachPiecesImage[GetPieceIndex(p)], p.screenPosX, p.screenPosY, this);
                 }
 
-                if(mouseSelected){
-                    movableLocationsX.clear();
-                    movableLocationsY.clear();
-                    FindMovableLocations(selectedPiece);
-                    DrawMovableLocations(g,this);
+                if(game.mouseSelected){
+                    game.movableLocationsX.clear();
+                    game.movableLocationsY.clear();
+                    FindMovableLocations(game.selectedPiece,game);
+                    DrawMovableLocations(g,this,game, game.crossImage);
                 }
             }
         };
 
-        jFrame.addMouseMotionListener(new MouseMotionListener() {
+        game.jFrame.addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent e) {
                 //while drag move the piece with mouse
@@ -81,79 +90,84 @@ public class Game {
             @Override
             public void mouseMoved(MouseEvent e) {
                 // TODO Auto-generated method stub
-
             }
         });
 
-        jFrame.addMouseListener(new MouseListener() {
+        game.jFrame.addMouseListener(new MouseListener() {
             @Override
             public void mousePressed(MouseEvent e) {
                 int getInputX = Math.max(e.getX() - 18, 0);
                 int getInputY = Math.max(e.getY() - 43, 0);
 
-                if(getPiece(getInputX, getInputY) != null){ // if there is a piece at the mouse pressed position
-                    if(!mouseSelected){ // if mouse didn't select before that
-                        if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == isTurnWhite){
-                            selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
-                            mouseSelected = true; // mouse selected
+                if(getPiece(getInputX, getInputY,game) != null){ // if there is a piece at the mouse pressed position
+                    if(!game.mouseSelected){ // if mouse didn't select before that
+                        if(getPiece(getInputX, getInputY,game).isWhite == game.isSideWhite){
+                            game.selectedPiece = getPiece(getInputX, getInputY,game); // selectedPiece selected
+                            game.mouseSelected = true; // mouse selected
                         }
                     }else{ // if mouse selected before that
-                        if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == selectedPiece.isWhite){ // if the color of the piece which is at mouse pressed position is same with the color of selectedPiece
-                            if(Objects.requireNonNull(getPiece(getInputX, getInputY)).isWhite == isTurnWhite){
-                                selectedPiece = getPiece(getInputX, getInputY); // selectedPiece selected
-                                mouseSelected = true; // mouse selected
+                        if(getPiece(getInputX, getInputY,game).isWhite == game.selectedPiece.isWhite){ // if the color of the piece which is at mouse pressed position is same with the color of selectedPiece
+                            if(getPiece(getInputX, getInputY,game).isWhite == game.isSideWhite){
+                                game.selectedPiece = getPiece(getInputX, getInputY,game); // selectedPiece selected
+                                game.mouseSelected = true; // mouse selected
                             }
                         }else{ //  if the color of the piece which is at mouse pressed position isn't same with the color of selectedPiece
-                            for (int i = 0; i < movableLocationsX.size(); i++) {
-                                if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
-                                    selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+                            for (int i = 0; i < game.movableLocationsX.size(); i++) {
+                                if((game.movableLocationsX.get(i) == (getInputX / 64)) && (game.movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
+                                    if(game.selectedPiece.isWhite == game.isSideWhite){
+                                        game.MoveServerSend(new Point(game.selectedPiece.indexX, game.selectedPiece.indexY),new Point(getInputX / 64, getInputY / 64),game);
+                                        game.selectedPiece.move(getInputX / 64, getInputY / 64, game); // move selectedPiece to the mouse pressed position
+                                        game.mouseSelected=false; // mouse didn't select
 
-                                    mouseSelected=false; // mouse didn't select
-                                    // after movement check control
-                                    for (Piece p: pieces) {
-                                        if(p.name.equals("king")){
-                                            Check.Control(p.indexX, p.indexY, pieces, p);
-                                            if(isChecked)
-                                                break;
+                                        // after movement check control
+                                        for (Piece p: game.pieces) {
+                                            if(p.name.equals("king")){
+                                                Check.Control(p.indexX, p.indexY, game.pieces, p,game);
+                                                if(game.isChecked)
+                                                    break;
+                                            }
                                         }
-                                    }
 
-                                    isTurnWhite = !isTurnWhite;
-                                    break;
+                                        game.isTurnWhite = !game.isTurnWhite;
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }else{ // if there isn't any piece at the mouse pressed position
-                    for (int i = 0; i < movableLocationsX.size(); i++) {
-                        if((movableLocationsX.get(i) == (getInputX / 64)) && (movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
-                            selectedPiece.move(getInputX / 64, getInputY / 64); // move selectedPiece to the mouse pressed position
+                    for (int i = 0; i < game.movableLocationsX.size(); i++) {
+                        if((game.movableLocationsX.get(i) == (getInputX / 64)) && (game.movableLocationsY.get(i) == (getInputY / 64))){ // selectedPiece can move the mouse pressed position
+                            if(game.selectedPiece.isWhite == game.isSideWhite){
+                                game.MoveServerSend(new Point(game.selectedPiece.indexX, game.selectedPiece.indexY),new Point(getInputX / 64, getInputY / 64),game);
+                                game.selectedPiece.move(getInputX / 64, getInputY / 64, game); // move selectedPiece to the mouse pressed position
+                                game.mouseSelected=false; // mouse didn't select
 
-                            mouseSelected=false; // mouse didn't select
-                            // after movement check control
-                            for (Piece p: pieces) {
-                                if(p.name.equals("king")){
-                                    Check.Control(p.indexX, p.indexY, pieces, p);
-                                    if(isChecked)
-                                        break;
+                                // after movement check control
+                                for (Piece p: game.pieces) {
+                                    if(p.name.equals("king")){
+                                        Check.Control(p.indexX, p.indexY, game.pieces, p,game);
+                                        if(game.isChecked)
+                                            break;
+                                    }
                                 }
-                            }
 
-                            isTurnWhite = !isTurnWhite;
-                            break;
+                                game.isTurnWhite = !game.isTurnWhite;
+                                break;
+                            }
                         }
                     }
                 }
-                if(checkerPiece != null)
-                    System.out.println(Objects.requireNonNull(checkerPiece).isWhite + " king "+ isChecked);
+                if(game.checkerPiece != null)
+                    System.out.println(Objects.requireNonNull(game.checkerPiece).isWhite + " king "+ game.isChecked);
 
-                if(isChecked) {
-                    if(checkerPiece.isWhite == isTurnWhite){
+                if(game.isChecked) {
+                    if(game.checkerPiece.isWhite == game.isTurnWhite){
                         System.out.println("mate");
                     }
                 }
 
-                jFrame.repaint();
+                game.jFrame.repaint();
             }
 
             @Override
@@ -181,8 +195,40 @@ public class Game {
             }
         });
 
-        jFrame.add(jPanel);
-        jFrame.setVisible(true);
+        game.jFrame.add(jPanel);
+        game.jFrame.setVisible(true);
+    }
+
+    public void MoveServerSend(Point start, Point end, Game game){
+        ArrayList<Point> points = new ArrayList<>();
+        points.add(start);
+        points.add(end);
+        Message msg = new Message(Message.Message_Type.Move);
+
+        ArrayList<Object> send = new ArrayList<>();
+        send.add(points);
+        send.add(game.pieces);
+        msg.content = send;
+        Client.Send(msg);
+
+
+    }
+
+    public void MoveServer(ArrayList<Object> objects,Game game){
+        game.pieces = (LinkedList<Piece>) objects.get(1);
+        ArrayList<Point> points = (ArrayList<Point>) objects.get(0);
+        for (Piece p2: pieces) {
+            if(p2.indexX == points.get(0).x && p2.indexY == points.get(0).y){
+                System.out.println("if");
+                System.out.println(p2.name);
+                p2.move(points.get(1).x, points.get(1).y, game);
+                System.out.println("Rakip Hareket etti");
+                break;
+            }
+        }
+
+        game.isTurnWhite = !game.isTurnWhite;
+        game.jFrame.repaint();
     }
 
     public static void DrawBoard(Graphics g) {
@@ -243,13 +289,14 @@ public class Game {
 
     }
 
-    public static BufferedImage ReadImage(BufferedImage fullPiecesImage, String filePath) {
+    public static BufferedImage ReadImage(String filePath) {
+        BufferedImage crossBufferedImage = null;
         try {
-            fullPiecesImage = ImageIO.read(new File(filePath));
+            crossBufferedImage = ImageIO.read(new File(filePath));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        return fullPiecesImage;
+        return crossBufferedImage;
     }
 
     public static void SplitPiecesImage(BufferedImage fullPiecesImage, Image[] eachPiecesImage) {
@@ -294,11 +341,11 @@ public class Game {
         return index;
     }
 
-    public static Piece getPiece(int x, int y) {
+    public static Piece getPiece(int x, int y,Game game) {
 
         int xp=x/64;
         int yp=y/64;
-        for(Piece p: pieces){
+        for(Piece p: game.pieces){
             if(p.indexX==xp&&p.indexY==yp){
                 return p;
             }
@@ -306,43 +353,37 @@ public class Game {
         return null;
     }
 
-    public static void FindMovableLocations(Piece piece) {
+    public static void FindMovableLocations(Piece piece, Game game) {
         switch (piece.name) {
             case "king":
-                Moves.KingMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.KingMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
             case "queen":
-                Moves.QueenMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.QueenMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
             case "bishop":
-                Moves.BishopMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.BishopMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
             case "knight":
-                Moves.KnightMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.KnightMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
             case "rook":
-                Moves.RookMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.RookMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
             case "pawn":
-                Moves.PawnMove(piece.indexX, piece.indexY, piece.isWhite, pieces);
+                Moves.PawnMove(piece.indexX, piece.indexY, piece.isWhite, game.pieces,game);
                 break;
         }
     }
 
-    public static void DrawMovableLocations(Graphics g, ImageObserver observer){
+    public static void DrawMovableLocations(Graphics g, ImageObserver observer, Game game, Image crossImage){
         int y=0;
-        for (Integer locationsX : movableLocationsX) {
-            g.drawImage(crossImage, locationsX * 64, movableLocationsY.get(y) * 64, observer);
+        for (Integer locationsX : game.movableLocationsX) {
+            g.drawImage(crossImage, locationsX * 64, game.movableLocationsY.get(y) * 64, observer);
             y++;
         }
     }
 
-    public static void DrawMovableLocationsOnCheck(Graphics g, ImageObserver observer){
-        int y=0;
-        for (Integer locationsX : goOnCheckLocationsX) {
-            g.drawImage(crossImage, locationsX * 64, goOnCheckLocationsY.get(y) * 64, observer);
-            y++;
-        }
-    }
+
 
 }
