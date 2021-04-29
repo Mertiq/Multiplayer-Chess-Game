@@ -47,10 +47,5 @@ public class Piece implements Serializable {
         System.out.println(this.name + " " + this.indexX + " " + this.indexY);
         pieces.remove(this);
 
-        /*
-        if(this.name.equals("king"))
-            System.out.println("mate");
-         */
-
     }
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Server;
 
 import java.io.IOException;
@@ -14,10 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Message.Message;
 
-/**
- *
- * @author Mert
- */
+
 public class Server {
     
     public static ServerSocket serverSocket;
@@ -55,21 +47,13 @@ public class Server {
 class ServerThread extends Thread {
 
     public void run() {
-        //server kapanana kadar dinle
         while (!Server.serverSocket.isClosed()) {
             try {
-                System.out.println("Client Bekleniyor...");
                 
                 Socket clientSocket = Server.serverSocket.accept();
-
-                System.out.println("Client Geldi...");
-                
                 SClient nclient = new SClient(clientSocket, Server.IdClient);
-
                 Server.IdClient++;
-                
                 Server.Clients.add(nclient);
-                
                 nclient.listenThread.start();
 
             } catch (IOException ex) {
